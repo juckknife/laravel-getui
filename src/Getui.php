@@ -74,7 +74,7 @@ class Getui
 
 
     // 单一透传消息
-    public static function pushMessageToSingle($template,$config,$data,$CID){
+    public static function pushMessageToSingle($template,$config,$data,$CID,$payload=''){
         $igt = self::IGtPush();
         // 类型参数
         // 4.NotyPopLoadTemplate：通知弹框下载功能模板
@@ -89,7 +89,7 @@ class Getui
                 $template = self::IGtNotyPopLoadTemplate($data,$config);
                 break;
             default:
-                $template = self::IGtTransmissionTemplate($data,$config);
+                $template = self::IGtTransmissionTemplate($data,$config,$payload);
                 break;
         }
 
@@ -208,11 +208,11 @@ class Getui
 
 
     // 透传数据构造
-    public static function IGtTransmissionTemplate($data,$config){
+    public static function IGtTransmissionTemplate($data,$config,$payload){
             $template = new \IGtTransmissionTemplate();
             $template->set_appId(Config::get("getui.APPID"));//应用appid 
             $template->set_appkey(Config::get("getui.APPKEY"));//应用appkey
-            $template->set_transmissionType(1);//透传消息类型 
+            $template->set_transmissionType(2);//透传消息类型
             $template->set_transmissionContent($data);//透传内容
             // $template->set_duration(BEGINTIME,ENDTIME); //设置ANDROID客户端在此时间区间内展示消息
 
@@ -228,9 +228,9 @@ class Getui
                 $alertmsg=new \SimpleAlertMsg();
                 $alertmsg->alertMsg=$body;
                 $apn->alertMsg=$alertmsg;
-                $apn->badge=2;
+                $apn->badge=0;
                 $apn->sound="";
-                $apn->add_customMsg("payload","payload");
+                $apn->add_customMsg("payload",$payload);
                 $apn->contentAvailable=1;
                 $apn->category="ACTIONABLE";
                 $template->set_apnInfo($apn);
@@ -253,9 +253,9 @@ class Getui
                 $alertmsg->titleLocArgs=array("TitleLocArg");
 
                 $apn->alertMsg=$alertmsg;
-                $apn->badge=7;
+                $apn->badge=0;
                 $apn->sound=""; 
-                $apn->add_customMsg("payload","payload");
+                $apn->add_customMsg("payload",$payload);
                 $apn->contentAvailable=1;
                 $apn->category="ACTIONABLE";
                 $template->set_apnInfo($apn);
